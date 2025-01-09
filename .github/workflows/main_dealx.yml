@@ -28,9 +28,9 @@ jobs:
         run: |
           cd frontend
           npm ci
+          npm audit fix --force
           chmod +x ./node_modules/.bin/react-scripts
-          npm audit fix
-          npm run build --if-present
+          npm run build
 
       # Step 4: Install dependencies and build backend
       - name: Install backend dependencies
