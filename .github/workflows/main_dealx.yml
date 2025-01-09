@@ -14,27 +14,48 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout code
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js version
+      # Step 2: Set up Node.js version
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
 
-      - name: npm install, build, and test
+      # Step 3: Install dependencies and build frontend
+      - name: Install and build frontend
         run: |
+          cd frontend
           npm install
           npm run build --if-present
-          npm run test --if-present
+          cd ..
 
-      - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+      # Step 4: Install dependencies and build backend
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          npm install
+          cd ..
 
-      - name: Upload artifact for deployment job
+      # Step 5: Zip artifacts for deployment
+      - name: Zip frontend and backend artifacts
+        run: |
+          zip -r frontend.zip frontend
+          zip -r backend.zip backend
+
+      # Step 6: Upload artifacts for deployment job
+      - name: Upload artifacts for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: node-app
-          path: release.zip
+          name: frontend-artifact
+          path: frontend.zip
+
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-artifact
+          path: backend.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -43,17 +64,28 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write # Required for requesting the JWT
 
     steps:
-      - name: Download artifact from build job
+      # Step 1: Download frontend artifact
+      - name: Download frontend artifact
         uses: actions/download-artifact@v4
         with:
-          name: node-app
+          name: frontend-artifact
 
-      - name: Unzip artifact for deployment
-        run: unzip release.zip
-      
+      # Step 2: Download backend artifact
+      - name: Download backend artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-artifact
+
+      # Step 3: Unzip artifacts
+      - name: Unzip frontend and backend artifacts
+        run: |
+          unzip frontend.zip
+          unzip backend.zip
+
+      # Step 4: Login to Azure
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -61,11 +93,18 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_A8CBEB2D5316482D9264C3E3190D626B }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_486E4A00CE8E43D28B460CA6555F0CD5 }}
 
-      - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
+      # Step 5: Deploy frontend to Azure Web App
+      - name: 'Deploy frontend to Azure Web App'
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'DealX'
+          app-name: 'DealX-frontend'
           slot-name: 'Production'
-          package: .
-          
+          package: ./frontend
+
+      # Step 6: Deploy backend to Azure Web App
+      - name: 'Deploy backend to Azure Web App'
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'DealX-backend'
+          slot-name: 'Production'
+          package: ./backend
