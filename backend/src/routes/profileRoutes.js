@@ -1,24 +1,34 @@
 import express from 'express';
 import User from '../models/user.js'; 
 
-const router = express.Router();
+const ProfileRouter = express.Router();
 
-router.get('/:id', async (req, res) => {
+
+ProfileRouter.get('/' , async(req , res)=> { 
   try {
-    const user = await User.findByPk(req.params.id, {
-      attributes: ['user_id', 'username', 'email', 'full_name', 'address', 'phone_number'],
-    });
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    res.json(user);
-  } catch (err) {
-    console.error('Error fetching user profile:', err.message);
-    res.status(500).json({ error: 'Failed to fetch profile' });
+    console.log('Server is running');
+  
+  }catch{
+    console.log('Error');
   }
-});
+})
 
-router.put('/:id', async (req, res) => {
+// ProfileRouter.get('/:id', async (req, res) => {
+//   try {
+//     const user = await User.findByPk(req.params.id, {
+//       attributes: ['user_id', 'username', 'email', 'full_name', 'address', 'phone_number'],
+//     });
+//     if (!user) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+//     res.json(user);
+//   } catch (err) {
+//     console.error('Error fetching user profile:', err.message);
+//     res.status(500).json({ error: 'Failed to fetch profile' });
+//   }
+// });
+
+ProfileRouter.put('/:id', async (req, res) => {
   const { username, email, full_name, address, phone_number } = req.body;
 
   try {
@@ -38,7 +48,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+ProfileRouter.delete('/:id', async (req, res) => {
   try {
     const deleted = await User.destroy({
       where: { user_id: req.params.id },
@@ -55,4 +65,4 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-export default router;
+export {ProfileRouter};

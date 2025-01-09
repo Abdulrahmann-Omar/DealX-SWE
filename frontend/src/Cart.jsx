@@ -12,13 +12,12 @@ const marketplaces = [
 { name: 'another' },
 ];
 
-
 const products = [
 {
 name: 'Product 1',
 quantity: 1,
 price: 150,
-image: 'path/to/product-image.jpg',
+image: 'path/to/product-image.jpg', // Replace with actual image path
 },
 ];
 
@@ -49,7 +48,6 @@ return (
         </div>
         ))}
     </div>
-
 
     <div className="cart-summary">
         <h3>subtotal : 50 items</h3>

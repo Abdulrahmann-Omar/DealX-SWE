@@ -1,29 +1,41 @@
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
-import axios from 'axios'
+import axios from 'axios';
+import { useUser } from './UserContext'; // Import the context
+import { Link } from 'react-router-dom';
 
 const LoginForm = () => {
-const navigate = useNavigate();
-const [email , setEmail] = useState('') ;
-const [password , setPassword] = useState('')
+    const navigate = useNavigate();
+    const { login } = useUser(); // Access login function from context
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState(''); // For displaying error messages
 
-const handleSubmit = async (e) => {
-e.preventDefault();
-try {
-    const response = await axios.post('http://localhost:5000/api/users', {
-    email,
-    password_hash: password,
-    });
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post('http://localhost:5000/api/users', {
+                email,
+                password_hash: password,
+            });
+            if (response.status === 200) {
+                navigate('/mainUser', { state: { user: response.data } });
+            }
 
-    if (response.status === 200) {
-        navigate('/mainUser');
-    }
-} catch (error) {
-    console.error('Login failed:', error);
-}
-};
-
+            if (response.data.token) {
+                login(response.data);
+                
+                localStorage.setItem('token', response.data.token);
+                
+                // Redirect the user to the profile page or dashboard
+            } else {
+                setError('No token received. Please try again.');
+            }
+        } catch (error) {
+            console.error('Login failed:', error);
+            setError('Login failed. Please check your credentials.');
+        }
+    };
 return (
     <div className="login-container">
         <form className="login-form" onSubmit={handleSubmit}>

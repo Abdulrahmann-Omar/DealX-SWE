@@ -1,6 +1,3 @@
-body{
-  background-color: #f5f5f5;
-}
 /* .Card{ 
   border: 1px solid hsl(0, 0%, 80%);
   border-radius: 10px;
@@ -32,17 +29,31 @@ color : hsl(0,0%, 20%)
   font-family: Arial , sans-serif ; 
   color: hsl(0, 57%, 39%) ; 
 } */
+
+:root{ 
+
+  --shadow : 1px 1px 3px 0 #c4ceda, -4px 0 3px 0 hsla(0, 0%, 100%, 0.6), 0 -4px 3px 0 hsla(0, 0%, 100%, 0.6), -2px -2px 14px 4px #fff, 3px 3px 8px 0 #b0c4db, 3px 3px 15px 0 #c4ceda;
+  --buttons-shadow : 2px 2px 4px 0 rgba(176, 196, 219, 0.53), -3px -3px 8px 4px #fff, 3px 3px 15px 0 #c4ceda;
+}
+
+
 *{
-  font-family: sans-serif
+  font-family: sans-serif;
 
 }
+
+
 .navbar {
+  margin: 20px auto;
+  border-radius: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color:#f5f5f5;
   color: #000000;
+  box-shadow: var(--shadow) ;
+  width: 880px;
+
 }
 
 .logo {
@@ -144,28 +155,16 @@ color : hsl(0,0%, 20%)
       color: #fff;
   }
 } */
-
-
 .product-card {
   display: flex;
   align-items: center;
-  max-width: 400px;
-  max-height: 600px;
+  width: 400px;
+  height: 200px;
   /* border: 1px solid #ddd; */
   background-color: #f9f9f9;
   box-sizing: border-box;
-  margin: 0 30px 30px 0;
+  margin: 0 10px 15px 0;
   border-radius: 15px;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
-  
-  /* background: linear-gradient(45deg, #ffca6f, #d6aa5e);
-  border-radius: 38px;
-background: linear-gradient(145deg, #ffca6f, #d6aa5e);
-border-radius: 47px;
-background: linear-gradient(145deg, #ffb429, #e09722);
-box-shadow:  5px 5px 10px #d48f20,
-             -5px -5px 10px #ffc12c;
-border: none ;  */
 }
 
 
@@ -176,7 +175,6 @@ border: none ;  */
   /* height: 100%; */
   overflow: hidden;
 }
-
 
 .card-image img {
   height: 100%; 
@@ -225,10 +223,9 @@ border: none ;  */
 }
 
 .card-footer {
-  height: 50px;
-    display: flex
-;
-    justify-content: space-between;
+    height: 50px;
+    display: flex;
+    justify-content: flex-end;
     align-items: flex-end;
     flex-direction: row;
     align-content: flex-end
@@ -389,11 +386,6 @@ border: none ;  */
 }
 
 
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
 
 .search-bar {
   display: flex;
@@ -603,29 +595,21 @@ border: none ;  */
 }
 
 .add-to-cart {
+      margin : 0 0 0 10px;
+
       padding: 5px 10px;
       border-radius: 10px;
-      background-color: #114AB1;
-      color: white;
+      background-color: transparent;
+      color: rgb(143, 139, 139);
       border: none;
       cursor: pointer;
-      font-size: 1.1rem;
+      font-size: 1.5rem;
       transition: background-color 0.3s;
+      box-shadow: 2px 2px 4px 0 rgba(176, 196, 219, 0.53), -3px -3px 8px 4px #fff, 3px 3px 15px 0 #c4ceda;
 }
 
 .add-to-cart:hover {
   background-color: #0056b3;
-}
-
-.add-to-wishlist {
-  padding: 5px 10px;
-  border-radius: 10px;
-  color: rgb(255, 0, 0);
-  background-color: white;
-  border: none;
-  cursor: pointer;
-  font-size: 1.5rem;
-  transition: background-color 0.3s;
 }
 
 .tabs {
@@ -715,57 +699,64 @@ h1 {
       
           
 }
-.container {
-  display: flex  ;
-  justify-content: center;
-  flex-direction: column;
-}
-
 
 .product:last-child {
   margin-bottom: 0;
 }
-
 .product-list {
-  max-width: 92%;
-  margin:auto;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  flex-direction: column;
-  align-content: stretch;
-  align-items: stretch;
-  padding: 20px;
-  border-radius: 5px;
-  margin: 5px;
-  background-color: #ecf0f3;
-  border-radius: 35px;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;      max-height: 700px;
-  overflow-y: scroll;
-}
-.product-list::-webkit-scrollbar {
-  display: none;
-}
+      display: flex  ;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      flex-direction: column;
+      align-content: stretch;
+      align-items: stretch;
+      padding: 20px;
+      border-radius: 24px;
+      margin: 5px;
+      overflow-y: scroll;
+      /* border: #ea6342dd 1px solid; */
+      box-shadow: var(--shadow);
+      /* border-color: #f1f2f6; */
+      height:700px;
+      width: 90%;
+      margin: auto;
+  }
+
 
 
 .mainuser{
-  display: flex
-;
+  display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
   flex-direction: row;
   align-content: stretch;
   }
 
+/* width */
+::-webkit-scrollbar {
+  width: 2px;
+  border-radius: 50px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+  background:#E4580B;
+  }
 
-.product-list .product-card {
-
-  flex: 1 1 calc(33.333% - 20px); /* Adjust items to take up 1/3 of the row minus spacing */
-   /* Ensures items don't exceed their calculated width */
-  /* border: 1px solid #ddd; */
-  padding: 10px;
-  background-color: #f9f9f9;
-  text-align: center;
+  .product-list .product-card {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: calc(33.333% - 20px);
+    /* border: 1px solid #ddd; */
+    padding: 10px;
+    background-color: #f9f9f9;
+    text-align: center;
+    box-shadow: var(--shadow);
 }
 
 .product-image {
@@ -776,23 +767,6 @@ h1 {
   /* object-fit: cover; */
   border: 1px solid #ddd;
   border-radius: 5px 0px 0px 5px;
-}
-
-@keyframes appear {
-  from {
-    opacity: 0;
-    clip-path: inset(50% 50% 50% 50%);
-  }
-  to {
-    opacity: 1;
-    clip-path: inset(0 0 0 0);
-  }
-}
-
-.product-card {
-  animation: appear 0.4s ease-out;
-  animation-timeline: view();
-  animation-range: entry 0% cover 20%;
 }
 
 .product-details  {
@@ -863,4 +837,45 @@ hr {
       justify-content: center;
       align-items: stretch;
       align-content: stretch;
+}
+
+
+/*AbduFiles------------------------------------------------------------------*/
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

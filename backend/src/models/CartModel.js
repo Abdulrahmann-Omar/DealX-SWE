@@ -9,7 +9,7 @@ cart_id: {
     primaryKey: true,
 },
 product_id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.TEXT,
     allowNull: false,
     primaryKey: true, 
 },

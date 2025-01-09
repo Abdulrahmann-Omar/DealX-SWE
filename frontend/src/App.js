@@ -7,12 +7,15 @@ import MainPage from './Main_User_Page';
 import SearchResults from './results_page';
 import Product from './ProductPage';
 import CartPage from './Cart';
+import { UserProvider } from './UserContext';
 import ProfilePage from './ProfilePage';
-import Premium from './Premium'; 
+import Reward from './App-RewardSystem';
+
 
 const App = () => {
 
     return(
+        <UserProvider>
         <BrowserRouter>
             <Routes>
                 <Route path = "/" element={<Home />} />
@@ -23,9 +26,12 @@ const App = () => {
                 <Route path="/Search" element={<SearchResults />} />
                 <Route path="/Product" element={<Product />} />
                 <Route path="/Profile" element= { <ProfilePage/>}/>
-                <Route path="/Premium" element={<Premium />} />
+                <Route path="/Reward" element= { <Reward/>}/>
+
             </Routes>
+        
         </BrowserRouter>
+        </UserProvider>
     );
 }
 

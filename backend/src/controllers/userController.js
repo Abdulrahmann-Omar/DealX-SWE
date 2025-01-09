@@ -10,15 +10,15 @@ export const getUser = async (req, res) => {
   try {
     console.log('Fetching user from the database...');
     const start = Date.now(); 
-
-    const existingUser = await User.findOne({
+    
+    const user = await User.findOne({
       where: { email, password_hash },
     });
-
+    
     const end = Date.now(); 
     console.log(`Query execution time: ${end - start}ms`);
-
-    if (existingUser) {
+    
+    if (user) {
       // req.session.existingUser = {
       //   id: existingUser.id,
       //   username: existingUser.username,
@@ -28,10 +28,10 @@ export const getUser = async (req, res) => {
       //   full_name: existingUser.full_name,
       //   type: existingUser.type,
       // };
-
-      console.log('User found:', existingUser);
       
-      return res.status(200).json({ message: 'User exists', user: existingUser });
+      console.log('User found:', user);
+      
+      return res.status(200).json({ message: 'User exists', user: User });
     } else {
       console.log('No user found with the provided credentials.');
       return res.status(404).json({ message: 'User not found' });

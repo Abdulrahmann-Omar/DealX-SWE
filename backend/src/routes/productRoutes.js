@@ -9,9 +9,9 @@ const searchRoute = express.Router();
 
 productRoutes.get('/', getProducts);
 
-searchRoute.get('/', searchProducts);
+searchRoute.get('/search', searchProducts);
 
 
 cartRoutes.post('/:id', addToCart);
 
-export { productRoutes, cartRoutes };
+export { productRoutes, cartRoutes ,searchRoute };

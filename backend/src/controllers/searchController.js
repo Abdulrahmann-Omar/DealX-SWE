@@ -2,26 +2,27 @@ import Product from '../models/ProductCardModel.js';
 import { Op } from 'sequelize'; 
 
 const searchProducts = async (req, res) => {
-  const { query } = req.query;
-
   try {
-    const products = await Product.findAll({
-      where: {
-        description: {
-          [Op.iLike]: `%${query}%`,
-        },
-      },
-      order: [['price', 'ASC']],
-    });
-
-    if (products.length === 0) {
-      return res.status(404).json({ message: 'No products found.' });
+    const query = req.query.q; // Retrieve the search query from the request
+    console.log(query)
+    if (!query) {
+      return res.status(400).json({ error: 'Search query cannot be empty' });
     }
 
-    res.status(200).json(products);
+    // Query the database with the search term
+    const results = await Product.findAll({
+      where: {
+        name: {
+          [Op.like]: `%${query}%`, // Perform a partial match search
+        },
+      },
+    });
+    console.log(results); 
+    // Return search results
+    res.status(200).json(results);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error fetching products', error });
+    console.error('Error in search:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 

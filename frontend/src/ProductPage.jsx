@@ -1,43 +1,16 @@
 import React, { useState } from 'react';
 import Main_Nav from './Main_Nav';
-import axios from "axios"
+
 import { useLocation } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom'; 
 
 
 
 
 
 const Product = () => {
-
-const [inCart, setInCart] = useState(false); 
-const [inWishlist, setInWishlist] = useState(false);
-const navigate = useNavigate();
-  
 const location = useLocation();
 const { product } = location.state || {};
 
-const handleAddToCart = async () => {
-try {
-    if (!inCart) {3
-
-    const requestData = {
-    
-        quantity: product.stock_quantity,     
-        cart_id: 123,      
-    };
-
-    await axios.post(`http://localhost:5000/api/cart/${product.product_id}` ,requestData);
-    setInCart(true);
-    alert('Product added to cart!');
-    } else {
-
-    navigate('/cart');
-    }
-} catch (error) {
-console.error('Error adding to cart:', error);
-}
-};
 
 // const [size, setSize] = useState(null);
 
@@ -69,7 +42,7 @@ return (
 
     <div className="price-and-add">
         <span className="price">{product.price}</span>
-        <button className="add-to-cart"  onClick={() => handleAddToCart()}>Add To Cart</button>
+        <button className="add-to-cart">Add To Cart</button>
     </div>
 
     

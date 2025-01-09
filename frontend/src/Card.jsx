@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
-
+import { motion } from 'framer-motion';
 
 function Card({ product }) {
   const [inCart, setInCart] = useState(false); 
@@ -50,8 +50,16 @@ function Card({ product }) {
   };
 
   return (
-    <div className="product-card " onClick={() => handleCardClick(product)}>
-      <div className="card-image">
+    <motion.div 
+    className="product-card" onClick={() => handleCardClick(product)}
+    initial={{ opacity: 0, y: 50 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6 }}
+    viewport={{ once: true }} // Trigger animation once when card is in view
+  >
+    
+    
+         <div className="card-image">
         <img src={product.image_url} alt="Product Image" />
       </div>
       <div className="card-details">
@@ -68,17 +76,16 @@ function Card({ product }) {
           > <div className="fa fa-shopping-cart"></div>
          </button>
           <button
-            className="add-to-wishlist"
+            className="add-to-cart"
             onClick={(e) => {
               e.stopPropagation(); // Prevent triggering card click
               handleAddToWishlist();
             }}
-          >
-            <div className="fas fa-heart"></div>
+          ><div className="fa-solid fa-heart-circle-plus"></div>
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
