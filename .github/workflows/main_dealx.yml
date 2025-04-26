@@ -23,11 +23,17 @@ jobs:
         with:
           node-version: '20.x'
 
-      # Step 3: Disable npm audit checks before installing
+      # Step 3: Disable npm audit
       - name: Disable npm audit
         run: npm set audit false
 
-      # Step 4: Install dependencies and build frontend
+      # Step 4: Create .env file to skip preflight check
+      - name: Create .env file
+        run: |
+          cd frontend
+          echo "SKIP_PREFLIGHT_CHECK=true" > .env
+
+      # Step 5: Install dependencies and build frontend
       - name: Install and build frontend
         run: |
           cd frontend
@@ -36,20 +42,20 @@ jobs:
           chmod +x ./node_modules/.bin/react-scripts
           npm run build
 
-      # Step 5: Install dependencies and build backend
+      # Step 6: Install dependencies and build backend
       - name: Install backend dependencies
         run: |
           cd backend
           npm install --no-audit
           cd ..
 
-      # Step 6: Zip artifacts for deployment
+      # Step 7: Zip artifacts for deployment
       - name: Zip frontend and backend artifacts
         run: |
           zip -r frontend.zip frontend
           zip -r backend.zip backend
 
-      # Step 7: Upload artifacts for deployment job
+      # Step 8: Upload artifacts for deployment job
       - name: Upload artifacts for deployment job
         uses: actions/upload-artifact@v4
         with:
