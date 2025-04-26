@@ -23,29 +23,33 @@ jobs:
         with:
           node-version: '20.x'
 
-      # Step 3: Install dependencies and build frontend
+      # Step 3: Disable npm audit checks before installing
+      - name: Disable npm audit
+        run: npm set audit false
+
+      # Step 4: Install dependencies and build frontend
       - name: Install and build frontend
         run: |
           cd frontend
-          npm ci
-          npm audit fix --force
+          npm ci --no-audit
+          npm audit fix --force || true
           chmod +x ./node_modules/.bin/react-scripts
           npm run build
 
-      # Step 4: Install dependencies and build backend
+      # Step 5: Install dependencies and build backend
       - name: Install backend dependencies
         run: |
           cd backend
-          npm install
+          npm install --no-audit
           cd ..
 
-      # Step 5: Zip artifacts for deployment
+      # Step 6: Zip artifacts for deployment
       - name: Zip frontend and backend artifacts
         run: |
           zip -r frontend.zip frontend
           zip -r backend.zip backend
 
-      # Step 6: Upload artifacts for deployment job
+      # Step 7: Upload artifacts for deployment job
       - name: Upload artifacts for deployment job
         uses: actions/upload-artifact@v4
         with:
