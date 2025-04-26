@@ -1,5 +1,9 @@
 # Dockerfile for backend
-FROM node:latest
+# Define a valid default value for the ARG NODE_IMAGE
+ARG NODE_IMAGE=node:20.18.2
+
+# Use the ARG in the FROM instruction
+FROM ${NODE_IMAGE}
 
 WORKDIR /backend
 
