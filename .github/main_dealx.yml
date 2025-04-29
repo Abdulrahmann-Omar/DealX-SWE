@@ -1,0 +1,120 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy Node.js app to Azure Web App - DealX
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code
+      - uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js version
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.11'
+
+      # Step 3: Disable npm audit
+      - name: Disable npm audit
+        run: npm set audit false
+
+      # Step 4: Create .env file to skip preflight check
+      - name: Create .env file
+        run: |
+          cd frontend
+          echo "SKIP_PREFLIGHT_CHECK=true" > .env
+
+      # Step 5: Install dependencies and build frontend
+      - name: Install and build frontend
+        run: |
+          cd frontend
+          npm ci --no-audit
+          npm audit fix --force || true
+          chmod +x ./node_modules/.bin/react-scripts
+          npm run build
+
+      # Step 6: Install dependencies and build backend
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          npm install --no-audit
+          cd ..
+
+      # Step 7: Zip artifacts for deployment
+      - name: Zip frontend and backend artifacts
+        run: |
+          zip -r frontend.zip frontend
+          zip -r backend.zip backend
+
+      # Step 8: Upload artifacts for deployment job
+      - name: Upload artifacts for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-artifact
+          path: frontend.zip
+
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-artifact
+          path: backend.zip
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+      id-token: write # Required for requesting the JWT
+
+    steps:
+      # Step 1: Download frontend artifact
+      - name: Download frontend artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-artifact
+
+      # Step 2: Download backend artifact
+      - name: Download backend artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-artifact
+
+      # Step 3: Unzip artifacts
+      - name: Unzip frontend and backend artifacts
+        run: |
+          unzip frontend.zip
+          unzip backend.zip
+
+      # Step 4: Login to Azure
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_6F96FE606F9F4A84840269B5739B783D }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_A8CBEB2D5316482D9264C3E3190D626B }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_486E4A00CE8E43D28B460CA6555F0CD5 }}
+
+      # Step 5: Deploy frontend to Azure Web App
+      - name: 'Deploy frontend to Azure Web App'
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'DealX-frontend'
+          slot-name: 'Production'
+          package: ./frontend
+
+      # Step 6: Deploy backend to Azure Web App
+      - name: 'Deploy backend to Azure Web App'
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'DealX-backend'
+          slot-name: 'Production'

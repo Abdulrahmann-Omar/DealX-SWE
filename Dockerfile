@@ -1,20 +1,17 @@
 # Use an official Node.js runtime as a parent image
-FROM node:16
+FROM node:22.11
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json into the container
-COPY package*.json ./
+# Copy the backend code into the container
+COPY backend ./backend
 
-# Install dependencies
-RUN npm install
+# Install backend dependencies
+RUN cd backend && npm install
 
-# Copy the rest of the application code into the container
-COPY . .
-
-# Build the React frontend
-RUN npm run build --prefix frontend
+# Copy the frontend build files into the container
+COPY frontend/build ./frontend/build
 
 # Expose the port the app runs on
 EXPOSE 5000
