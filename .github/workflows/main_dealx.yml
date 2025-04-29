@@ -37,7 +37,7 @@ jobs:
       - name: Install and build frontend
         run: |
           cd frontend
-          npm ci --no-audit
+          npm install
           npm audit fix --force || true
           chmod +x ./node_modules/.bin/react-scripts
           npm run build
@@ -46,7 +46,7 @@ jobs:
       - name: Install backend dependencies
         run: |
           cd backend
-          npm install --no-audit
+          npm install
           cd ..
 
       # Step 7: Zip artifacts for deployment
