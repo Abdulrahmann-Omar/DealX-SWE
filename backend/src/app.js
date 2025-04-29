@@ -4,6 +4,12 @@ import session from 'express-session';
 import {productRoutes, cartRoutes , searchRoute} from './routes/productRoutes.js';
 import {userRoutes} from './routes/userRoutes.js'
 import {ProfileRouter} from './routes/profileRoutes.js'
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 
 
@@ -39,6 +45,13 @@ app.use('/api/cart' , cartRoutes);
 app.use('/api/profile', ProfileRouter);
 //comment
 app.use('/api/users', userRoutes);
+
+
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+});
 
 
 export default app;
