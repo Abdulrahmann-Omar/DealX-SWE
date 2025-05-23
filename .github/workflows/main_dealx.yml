@@ -34,6 +34,7 @@ jobs:
         run: |
           cd frontend
           rm -rf node_modules
+          npm install react-scripts --save-dev
           npm install
           npm run build
 
