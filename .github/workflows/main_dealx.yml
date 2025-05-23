@@ -33,7 +33,7 @@ jobs:
       - name: Install and build frontend
         run: |
           cd frontend
-          npm install
+          npm install react-scripts
           npm run build
 
       # Step 6: Install dependencies and build backend
