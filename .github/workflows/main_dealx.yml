@@ -30,7 +30,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-@@ -31,293 +35,587 @@
             frontend/package-lock.json
             backend/package-lock.json
 
