@@ -23,10 +23,6 @@ jobs:
         with:
           node-version: '22.x'
 
-      # Step 3: Disable npm audit
-      - name: Disable npm audit
-        run: npm set audit false
-
       # Step 4: Create .env file to skip preflight check
       - name: Create .env file
         run: |
@@ -38,7 +34,6 @@ jobs:
         run: |
           cd frontend
           npm install
-          chmod +x ./node_modules/.bin/react-scripts         
           npm run build
 
       # Step 6: Install dependencies and build backend
