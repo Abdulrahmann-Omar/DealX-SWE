@@ -34,7 +34,8 @@ jobs:
         run: |
           cd frontend
           npm install
-          npm run build --prefix frontend
+          ls -la node_modules/.bin
+          npm run build
 
       # Step 6: Install dependencies and build backend
       - name: Install backend dependencies
