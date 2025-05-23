@@ -48,24 +48,18 @@ jobs:
           npm install
           cd ..
 
-      # Step 7: Zip artifacts for deployment
-      - name: Zip frontend and backend artifacts
-        run: |
-          zip -r frontend.zip frontend
-          zip -r backend.zip backend
-
-      # Step 8: Upload artifacts for deployment job
-      - name: Upload artifacts for deployment job
+      # Step 7: Upload artifacts for deployment job
+      - name: Upload frontend artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: frontend-artifact
-          path: frontend.zip
+          path: frontend/build
 
-      - name: Upload backend artifact
+      - name: Upload backend artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: backend-artifact
-          path: backend.zip
+          path: backend
 
   deploy:
     runs-on: ubuntu-latest
@@ -89,13 +83,7 @@ jobs:
         with:
           name: backend-artifact
 
-      # Step 3: Unzip artifacts
-      - name: Unzip frontend and backend artifacts
-        run: |
-          unzip frontend.zip
-          unzip backend.zip
-
-      # Step 4: Login to Azure
+      # Step 3: Login to Azure
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -109,7 +97,7 @@ jobs:
         with:
           app-name: 'DealX-frontend'
           slot-name: 'Production'
-          package: ./frontend
+          package: ./frontend/build
 
       # Step 6: Deploy backend to Azure Web App
       - name: 'Deploy backend to Azure Web App'
@@ -117,3 +105,4 @@ jobs:
         with:
           app-name: 'DealX-backend'
           slot-name: 'Production'
+          package: ./backend
