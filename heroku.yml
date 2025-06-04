@@ -1,0 +1,51 @@
+# heroku.yml - Configuration for deploying Docker containers on Heroku
+
+# Setup phase: Define any one-off tasks needed before release (optional)
+# setup:
+#   addons:
+#     - plan: heroku-postgresql:hobby-dev # Example: Provision a Heroku Postgres add-on
+#   config:
+#     # Set environment variables needed during setup (if any)
+#     SOME_SETUP_VAR: value
+
+# Build phase: Define how to build the Docker images
+build:
+  docker:
+    # Define the web process (frontend served by Nginx)
+    web: frontend/Dockerfile
+    # Define the backend process (worker or another process type)
+    # Heroku typically expects one 'web' process for HTTP traffic.
+    # Running the backend as a separate process type might require a different approach
+    # or running both frontend and backend in one container (less ideal).
+    # Option 1: Run backend as a 'worker' (if it doesn't need external HTTP routing)
+    # worker: backend/Dockerfile
+    # Option 2: Adjust Nginx to proxy to backend running on a different port within the same dyno (complex)
+    # Option 3 (Simpler for Heroku): Combine backend start into the frontend container's entrypoint or use a Procfile.
+    # For this example, we assume the backend might run as a separate 'worker' process if needed,
+    # but the primary web traffic goes to the frontend container.
+    # If backend needs HTTP routing, Heroku's Docker support might be limiting for multi-container apps
+    # compared to docker-compose. Consider using Heroku for simpler apps or alternative platforms.
+  config:
+    # Pass build-time environment variables if needed (use Heroku config vars)
+    # REACT_APP_API_URL: /api # Example: Use relative path for API proxy
+
+# Release phase: Define commands to run before a new release is deployed
+# This is often used for database migrations
+# release:
+#   image: worker # Use the backend image if migrations are run from there
+#   command:
+#     - echo "Running database migrations... (Add migration command here)"
+#     - npm run db:migrate # Example command (adjust based on your migration setup)
+
+# Run phase: Define the processes to run for your application
+run:
+  # Define the main web process (frontend)
+  web: nginx -g "daemon off;"
+  # Define the backend worker process (if applicable)
+  # worker: npm start
+
+# Note: Environment variables (DB connection, secrets) must be set
+# in the Heroku application settings (Config Vars). Do not put them here.
+# Heroku automatically assigns a PORT environment variable that the web process must bind to.
+# Nginx is configured to listen on 80, Heroku maps external traffic to this internal port.
+

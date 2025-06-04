@@ -2,17 +2,42 @@ import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 
 // Load environment variables from .env file
-dotenv.config();
+// Ensure this path is correct relative to where the script is run, or use absolute paths if needed.
+// dotenv.config({ path: path.resolve(__dirname, '../../.env') }); // Example if .env is in root
+dotenv.config(); // Assumes .env is in the backend directory or loaded globally
 
-// Use environment variables for database connection, with fallback to hardcoded values for development or testing purposes
+// Check if required environment variables are set
+const requiredEnvVars = ['DB_NAME', 'DB_USER', 'DB_PASS', 'DB_HOST', 'DB_PORT'];
+for (const envVar of requiredEnvVars) {
+  if (!process.env[envVar]) {
+    console.error(`Error: Environment variable ${envVar} is not set.`);
+    process.exit(1);
+  }
+}
+
+// Use environment variables for database connection
 const sequelize = new Sequelize(
-  process.env.DB_NAME || 'ecommerce_rewards',  // Database name
-  process.env.DB_USER || 'postgres',      // Database user
-  process.env.DB_PASS || '159',  // Database password
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASS,
   {
-    host: process.env.DB_HOST || 'dealx-swe-youssef-tarek-postgres-1', // Container name or host
-    port: process.env.DB_PORT || 5432,       // Default Postgres port
-    dialect: 'postgres',                    // Database dialect
+    host: process.env.DB_HOST,
+    port: parseInt(process.env.DB_PORT, 10), // Ensure port is an integer
+    dialect: 'postgres',
+    logging: process.env.NODE_ENV === 'development' ? console.log : false, // Log queries in dev
+    dialectOptions: {
+      // Add SSL options if required for production database connection
+      // ssl: {
+      //   require: true,
+      //   rejectUnauthorized: false // Adjust based on your SSL certificate setup
+      // }
+    },
+    pool: {
+      max: 5, // Max number of connection in pool
+      min: 0, // Min number of connection in pool
+      acquire: 30000, // The maximum time, in milliseconds, that pool will try to get connection before throwing error
+      idle: 10000 // The maximum time, in milliseconds, that a connection can be idle before being released
+    }
   }
 );
 
