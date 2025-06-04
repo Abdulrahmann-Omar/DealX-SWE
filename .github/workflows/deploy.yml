@@ -30,6 +30,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # --- Set up Docker image names with lowercase owner ---
+      - name: Set up Docker image names
+        run: |
+          OWNER_LOWERCASE=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          echo "BACKEND_IMAGE_TAG=ghcr.io/$OWNER_LOWERCASE/dealx-backend" >> $GITHUB_ENV
+          echo "FRONTEND_IMAGE_TAG=ghcr.io/$OWNER_LOWERCASE/dealx-frontend" >> $GITHUB_ENV
+
       # --- Build and Push Backend Image ---
       - name: Build and push backend image
         id: build-backend
@@ -38,8 +45,7 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          # Use github.repository which is always lowercase (owner/repo)
-          tags: ghcr.io/${{ github.repository }}/dealx-backend:latest
+          tags: ${{ env.BACKEND_IMAGE_TAG }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -51,8 +57,7 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          # Use github.repository which is always lowercase (owner/repo)
-          tags: ghcr.io/${{ github.repository }}/dealx-frontend:latest
+          tags: ${{ env.FRONTEND_IMAGE_TAG }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
