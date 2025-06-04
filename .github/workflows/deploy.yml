@@ -38,8 +38,8 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          # Ensure repository owner is lowercase for Docker tags
-          tags: ghcr.io/${{ lower(github.repository_owner) }}/dealx-backend:latest
+          # Use github.repository which is always lowercase (owner/repo)
+          tags: ghcr.io/${{ github.repository }}/dealx-backend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -51,8 +51,8 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          # Ensure repository owner is lowercase for Docker tags
-          tags: ghcr.io/${{ lower(github.repository_owner) }}/dealx-frontend:latest
+          # Use github.repository which is always lowercase (owner/repo)
+          tags: ghcr.io/${{ github.repository }}/dealx-frontend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
