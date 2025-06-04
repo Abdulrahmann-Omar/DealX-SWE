@@ -1,6 +1,6 @@
 # /.github/workflows/deploy.yml
 
-name: Build and Push Docker Images
+name: Build, Push Docker Images, and Deploy to Railway
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
   workflow_dispatch: # Allow manual triggering
 
 jobs:
-  build_and_push:
+  build_push_deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -22,15 +22,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # --- Login to Container Registry ---
-      # Option 1: Login to Docker Hub
-      # - name: Log in to Docker Hub
-      #   uses: docker/login-action@v3
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      # Option 2: Login to GitHub Container Registry (ghcr.io)
+      # --- Login to GitHub Container Registry (ghcr.io) ---
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -40,45 +32,46 @@ jobs:
 
       # --- Build and Push Backend Image ---
       - name: Build and push backend image
+        id: build-backend
         uses: docker/build-push-action@v5
         with:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/dealx-backend:latest # Example tag for ghcr.io
-          # tags: your-dockerhub-username/dealx-backend:latest # Example tag for Docker Hub
+          tags: ghcr.io/${{ github.repository_owner }}/dealx-backend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       # --- Build and Push Frontend Image ---
       - name: Build and push frontend image
+        id: build-frontend
         uses: docker/build-push-action@v5
         with:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/dealx-frontend:latest # Example tag for ghcr.io
-          # tags: your-dockerhub-username/dealx-frontend:latest # Example tag for Docker Hub
+          tags: ghcr.io/${{ github.repository_owner }}/dealx-frontend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # --- Deployment Steps (Add platform-specific steps here) ---
-      # Example: Trigger deployment on Railway, Heroku, or SSH into VPS
-      # - name: Deploy to Railway
-      #   run: echo "Triggering Railway deployment... (Implement actual command)"
-      #
-      # - name: Deploy to Heroku
-      #   run: echo "Triggering Heroku deployment... (Implement actual command)"
-      #
-      # - name: Deploy to VPS via SSH
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{ secrets.VPS_HOST }}
-      #     username: ${{ secrets.VPS_USERNAME }}
-      #     key: ${{ secrets.VPS_SSH_KEY }}
-      #     script: |
-      #       cd /path/to/your/app
-      #       docker-compose pull
-      #       docker-compose up -d --remove-orphans
-      #       echo "Deployment to VPS complete!"
+      # --- Deploy to Railway ---
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }} # Use the secret configured by the user
+        # The `railway up` command typically deploys the linked repository.
+        # If your Railway project is configured to deploy based on the Docker images pushed to ghcr.io,
+        # you might need a different command or approach (e.g., triggering a webhook or using Railway's API directly).
+        # This example assumes `railway up` triggers a deployment based on the latest commit.
+        # Alternatively, if Railway services are linked to the Dockerfiles, this push might trigger it automatically.
+        # If Railway services are linked to the GHCR images, we might need `railway redeploy` or similar.
+        # Using `railway up --detach` for potentially long-running deployments.
+        run: |
+          echo "Attempting Railway deployment..."
+          railway up --detach
+          echo "Railway deployment command executed. Check Railway dashboard for status."
+        # Add error handling if needed
+        # railway status # Check status after deployment trigger
 
