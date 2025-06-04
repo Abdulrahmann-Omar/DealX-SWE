@@ -27,11 +27,11 @@ jobs:
 
       # --- Pre-Deployment Checks ---
       - name: Install Backend Dependencies
-        run: npm ci --ignore-scripts # Use ci if lock file exists, ignore scripts for check only
+        run: npm install --ignore-scripts # Use install for robustness
         working-directory: ./backend
 
       - name: Install Frontend Dependencies
-        run: npm ci --ignore-scripts # Use ci if lock file exists, ignore scripts for check only
+        run: npm install --ignore-scripts # Use install for robustness
         working-directory: ./frontend
 
       - name: Build Frontend (Check)
