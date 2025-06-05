@@ -83,10 +83,12 @@ jobs:
           cache-to: type=gha,mode=max
 
       # --- Deploy to Railway ---
-      - name: Set up Node.js (for Railway CLI)
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20' # Use Node.js LTS version 20 specifically for this step
+      - name: Install Node.js 20 manually (for Railway CLI)
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ca-certificates curl gnupg
+          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          sudo apt-get install -y nodejs
 
       - name: Install Railway CLI
         run: npm install -g @railway/cli
