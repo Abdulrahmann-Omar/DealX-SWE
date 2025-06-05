@@ -19,11 +19,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js (for checks)
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20' # Use Node.js LTS version 20
-          # Removed cache: 'npm' to troubleshoot persistent error
+      - name: Install Node.js 20 manually (for all steps)
+        run: |
+          echo "Installing Node.js 20..."
+          sudo apt-get update -y
+          sudo apt-get install -y ca-certificates curl gnupg
+          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          echo "Node.js version:"
+          node -v
+          echo "npm version:"
+          npm -v
 
       # --- Pre-Deployment Checks ---
       - name: Install Backend Dependencies
@@ -83,13 +89,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       # --- Deploy to Railway ---
-      - name: Install Node.js 20 manually (for Railway CLI)
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y ca-certificates curl gnupg
-          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-          sudo apt-get install -y nodejs
-
+      # Node.js already installed manually earlier
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
